@@ -2,7 +2,16 @@ import requests
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 import base64
+from moviepy.editor import VideoFileClip, AudioFileClip, CompositeAudioClip
 
+
+def merge_audio_tracks(video_path, downloaded_audio_path, output_path):
+    video = VideoFileClip(video_path)
+    original_audio = video.audio
+    downloaded_audio = AudioFileClip(downloaded_audio_path)
+    combined_audio = CompositeAudioClip([original_audio, downloaded_audio])
+    video_with_audio = video.set_audio(combined_audio)
+    video_with_audio.write_videofile(output_path, codec="libx264", audio_codec="aac")
 
 def upload_audio():
     url = 'https://127.0.0.1:5000/upload_audio'
@@ -39,9 +48,10 @@ def register(username, password):
 # Login
 def login(username, password):
     encrypted_username = base64.b64encode(cipher.encrypt(username.encode())).decode()
+    encrypted_password = base64.b64encode(cipher.encrypt(password.encode())).decode()
     payload = {
         "username": encrypted_username,
-        "password": password
+        "password": encrypted_password
     }
     response = requests.post("https://localhost:5000/login", json=payload, verify=False)
     print(response.json())
@@ -74,13 +84,16 @@ def download_content(content_id):
 
 # Example usage
 # Fetch all content
-content_list = get_all_content()
-
-# Download content with a specific ID (e.g., ID = 1)
-if content_list:
-    download_content(content_list[0]['id'])  # Change index or provide ID directly
-
-#Example usage
+# content_list = get_all_content()
+#
+# # Download content with a specific ID (e.g., ID = 1)
+# if content_list:
+#     download_content(content_list[0]['id'])  # Change index or provide ID directly
+#
+# #Example usage
 # register("testuser", "securepassword")
-# login("testuser", "securepassword")
+login("testuser", "securepassword")
 # upload_audio()
+
+# Example usage
+merge_audio_tracks("input_video.mp4", "downloaded_audio.mp3", "output_video.mp4")
