@@ -150,6 +150,7 @@ class GUI:
     def show_login_menu(self):
         #Manu that allows user to log into the server
         self.main_menu_frame.pack_forget()
+        self.register_menu_frame.pack_forget()
         self.login_menu_frame.pack(pady=20)
         self.root.geometry("400x320")
 
@@ -182,7 +183,7 @@ class GUI:
 
     def login(self):
         #Logs user into the server
-        username = self.login_username_input.get()
+        username = self.login_username_input.get().lower()
         password = self.login_password_input.get()
         try:
             self.user_id = Client.login(username, password)
@@ -193,9 +194,9 @@ class GUI:
     def register(self):
         #Registers user on the server
         name = self.register_name_input.get()
-        username = self.register_username_input.get()
+        username = self.register_username_input.get().lower()
         password = self.register_password_input.get()
-        email = self.register_email_input.get()
+        email = self.register_email_input.get().lower()
         try:
             if Client.register(name, username, password, email):
                 messagebox.showinfo("Success", "Registration successful! You can now log in.")
@@ -231,8 +232,6 @@ class GUI:
             for item in content:
                 self.content_list.insert(tk.END,f"ID: {item['id']}, Name: {item['name']}, Creator: {item['creator']}")
                 self.contents.append(item)
-            else:
-                messagebox.showwarning("Error", "Failed to load content.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to fetch content: {e}")
 
