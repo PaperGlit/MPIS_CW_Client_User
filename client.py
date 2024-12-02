@@ -58,9 +58,14 @@ class Client:
     @staticmethod
     def register(name, username, password, email):
         #Makes a register request
-        if (not Client.is_valid_name(name) or not Client.is_valid_username(username)
-                or not Client.is_valid_password(password) or not Client.is_valid_email(email)):
-            raise ValueError("Invalid data, please try again")
+        if not Client.is_valid_name(name):
+            raise ValueError("Invalid name")
+        if not Client.is_valid_username(username):
+            raise ValueError("Invalid username")
+        if not Client.is_valid_password(password):
+            raise ValueError("Invalid password")
+        if not Client.is_valid_email(email):
+            raise ValueError("Invalid email")
         cipher = Client.get_public_key()
         encrypted_username = base64.b64encode(cipher.encrypt(username.encode())).decode()
         encrypted_password = base64.b64encode(cipher.encrypt(password.encode())).decode()
